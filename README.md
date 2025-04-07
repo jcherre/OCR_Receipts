@@ -1,2 +1,7 @@
 # OCR_Receipts
-Repo for extraction of receipts data from images
+Se requiere la extracción de los siguientes campos principales:
+* RUC
+* Razón social
+* Fecha de emisión
+* Serie y correlativo
+* Importe total
