@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Scanner</title>
+    <!-- Link to Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1 class="text-center">Invoice Scanner</h1>
+    <div class="row justify-content-center mt-4">
+        <div class="col-12 col-md-6">
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label for="fileInput">Upload a JPG or PDF file</label>
+                    <input type="file" class="form-control" id="fileInput" accept=".jpg,.jpeg,.pdf">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Upload and Process Invoice</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Result Section -->
+    <div id="resultContainer" class="mt-5" style="display: none;">
+        <h3>Invoice Data:</h3>
+        <p><strong>Invoice Number:</strong> <span id="invoiceNumber">Not available</span></p>
+        <p><strong>Total:</strong> <span id="totalAmount">Not available</span></p>
+        <p><strong>Date:</strong> <span id="date">Not available</span></p>
+        <p><strong>RUC:</strong> <span id="ruc">Not available</span></p>
+    </div>
+</div>
+
+<!-- Link to Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Custom Script -->
+<script>
+    const uploadForm = document.getElementById('uploadForm');
+    const fileInput = document.getElementById('fileInput');
+    const resultContainer = document.getElementById('resultContainer');
+    const invoiceNumber = document.getElementById('invoiceNumber');
+    const totalAmount = document.getElementById('totalAmount');
+    const date = document.getElementById('date');
+    const ruc = document.getElementById('ruc');
+
+    uploadForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const file = fileInput.files[0];
+        if (!file) {
+            alert("Please select a file first!");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        fetch('/process_receipt', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Show the result
+            resultContainer.style.display = 'block';
+            invoiceNumber.textContent = data.invoice_number || "Not found";
+            totalAmount.textContent = data.total_amount || "Not found";
+            date.textContent = data.date || "Not found";
+            ruc.textContent = data.ruc_number || "Not found";
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error processing the invoice!');
+        });
+    });
+</script>
+
+</body>
+</html>
