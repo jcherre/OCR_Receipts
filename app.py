@@ -2,7 +2,7 @@ import os
 
 from pathlib import Path
 from flask import Flask, request, jsonify
-from module.ocr_facturas import OcrFactura
+from module.ocr_incoice import OcrInvoice
 
 app = Flask(__name__)
 
@@ -24,7 +24,7 @@ def ocr_factura():
             pdf_file.save(pdf_path)
 
             # I-process ang PDF
-            ocr_extractor = OcrFactura()
+            ocr_extractor = OcrInvoice()
             response = ocr_extractor.extract_information(pdf_path)
 
             # Tanggalin ang temporary file
