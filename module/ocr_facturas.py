@@ -5,6 +5,7 @@ import numpy as np
 
 from PIL import Image
 from paddleocr import PaddleOCR
+from module.utils import is_number
 
 
 class OcrFactura:
@@ -20,8 +21,9 @@ class OcrFactura:
         :param lang: El idioma para el OCR. Por defecto es 'es' (español).
         :type lang: str, optional
         """
-        self.ocr = PaddleOCR(lang=lang)
+        self.ocr = PaddleOCR(use_angle_cls=True, lang=lang)
         self.extract_words = list()
+        self.word_and_locations = list()
         self.join_words = ""
 
     def extract_text(self, image_to_analyze:np.ndarray):
@@ -31,7 +33,8 @@ class OcrFactura:
         :type image_to_analyze: np.ndarray
         """
         result = self.ocr.ocr(image_to_analyze, cls=True)
-        self.extract_words = [line[1][0] for line in result[0]]
+        self.word_and_locations = [[line[1][0], line[0]] for line in result[0] if line[1][0] not in ('s/', 'S/.', 'S/', '$/', '$/.')]
+        self.extract_words = [line[1][0] for line in result[0] if line[1][0] not in ('s/', 'S/.', 'S/', '$/', '$/.')]
 
     def process_pdf(self, pdf_path) -> np.ndarray:
         """
@@ -75,8 +78,89 @@ class OcrFactura:
         """
         patron_folio = r"([A-Z0-9]+)-(\d+)"
         folio_encontrados = re.findall(patron_folio, self.join_words)
-        folio_encontrados = [element for element in folio_encontrados if len(element[0]) > 2]
+        folio_encontrados = [element for element in folio_encontrados if len(element[0]) == 4]
+        if len(folio_encontrados) == 0:
+            folio_and_serie = ['', '']
+            for element in self.extract_words:
+                if 'SERIE' in element.upper():
+                    pattern_serie = "([A-Z0-9]+)"
+                    series = re.findall(pattern_serie, element)
+                    series = [serie for serie in series if len(serie) == 4]
+                    folio_and_serie[0] = series[0]
+                if 'CORRELATIVO' in element.upper():
+                    pattern_correlativo = "(\d+)"
+                    correlativos = re.findall(pattern_correlativo, element)
+                    correlativos = [correlativo for correlativo in correlativos if len(correlativo) > 3]
+                    folio_and_serie[1] = correlativos[0]
+            folio_encontrados.append(folio_and_serie)
         return folio_encontrados
+
+    def extract_prices(self) -> dict:
+        set_prices = {
+            "IGV": None,
+            "total_descuentos": None,
+            "OP.Exoneradas": None,
+            "OP.Inafectas": None,
+            "OP.Gravadas": None,
+            "OP.Gratuita": None,
+            "ICBPER": None,
+            "importe_total": None
+        }
+        currency_pattern = r"\d+\.\d+\d"
+        currency_found = re.findall(currency_pattern, self.join_words)
+
+        # Find index of currency
+        found_index = set()
+        for element_to_search in currency_found:
+            for index, element in enumerate(self.extract_words):
+                if element_to_search in element:
+                    found_index.add(index)
+
+        # Struct information to response
+        found_index= sorted(list(found_index))
+
+        rows_prices = []
+        for index in found_index:
+            same_row = [self.extract_words[index]]
+            if abs(self.word_and_locations[index][1][3][1] - self.word_and_locations[index + 1][1][3][1]) < 20.0:
+                same_row.append(self.word_and_locations[index + 1][0])
+            elif abs(self.word_and_locations[index][1][3][1] - self.word_and_locations[index - 1][1][3][1]) < 20.0:
+                same_row.append(self.word_and_locations[index - 1][0])
+            rows_prices.append(same_row)
+
+        rows_prices = [row for row in rows_prices if len(row) == 2 and is_number(row[0])]
+
+        if len(rows_prices) == 0:
+            for index in found_index:
+                set_prices['IGV']  = re.findall(currency_pattern, self.extract_words[index].replace('18.00', ''))[0] \
+                    if 'IGV' in self.extract_words[index] else set_prices['IGV']
+                set_prices['total_descuentos'] = re.findall(currency_pattern, self.extract_words[index])[0] \
+                    if 'DESCUENTO' in self.extract_words[index] else set_prices['total_descuentos']
+                set_prices['OP.Gratuita'] = re.findall(currency_pattern, self.extract_words[index])[0] \
+                    if 'GRATUITA' in self.extract_words[index] else set_prices['OP.Gratuita']
+                set_prices['OP.Exoneradas'] = re.findall(currency_pattern, self.extract_words[index])[0] \
+                    if 'EXONERADA' in self.extract_words[index] else set_prices['OP.Exoneradas']
+                set_prices['OP.Inafectas'] = re.findall(currency_pattern, self.extract_words[index])[0] \
+                    if 'INAFECTA' in self.extract_words[index] else set_prices['OP.Inafectas']
+                set_prices['OP.Gravadas'] = re.findall(currency_pattern, self.extract_words[index])[0] \
+                    if 'GRAVADA' in self.extract_words[index] else set_prices['OP.Gravadas']
+                set_prices['ICBPER'] = re.findall(currency_pattern, self.extract_words[index])[0] \
+                    if 'ICBPER' in self.extract_words[index] else set_prices['ICBPER']
+                set_prices['importe_total'] =re.findall(currency_pattern, self.extract_words[index])[0]\
+                    if 'TOTAL' in self.extract_words[index] else set_prices['importe_total']
+        else:
+            for new_row in rows_prices:
+                set_prices['IGV'] = new_row[0] if 'IGV' in new_row[1].replace('.', '') else set_prices['IGV']
+                set_prices['total_descuentos'] = new_row[0] if 'DESCUENTO' in new_row[1] else set_prices['total_descuentos']
+                set_prices['OP.Gratuita'] = new_row[0] if 'GRATUITA' in new_row[1] else set_prices['OP.Gratuita']
+                set_prices['OP.Exoneradas'] = new_row[0] if 'EXONERADA' in new_row[1] else set_prices['OP.Exoneradas']
+                set_prices['OP.Inafectas'] = new_row[0] if 'INAFECTA' in new_row[1] else set_prices['OP.Inafectas']
+                set_prices['OP.Gravadas'] = new_row[0] if 'GRAVADA' in new_row[1] else set_prices['OP.Gravadas']
+                set_prices['ICBPER'] = new_row[0] if 'ICBPER' in new_row[1] else set_prices['ICBPER']
+                set_prices['importe_total'] = new_row[0] if 'TOTAL' in new_row[1] else set_prices['importe_total']
+
+
+        return set_prices
 
     def extract_total_venta(self) -> list:
         """
@@ -104,15 +188,16 @@ class OcrFactura:
         self.join_words = " ".join(self.extract_words).replace(
             " - ", "-"
         )
+        set_prices = self.extract_prices()
         rucs_encontrados = self.extract_ruc()
         fechas_encontradas = self.extract_fecha_emision()
         folio_encontrados = self.extract_patron_folio()
-        precios_encontrados = self.extract_total_venta()
         response = {
+            "ruc_emisor": rucs_encontrados[0] if rucs_encontrados else None,
             "rucs_encontrados": rucs_encontrados,
             "fecha_emision": fechas_encontradas[0] if fechas_encontradas else None,
             "serie": folio_encontrados[0][0] if folio_encontrados else None,
             "correlativo": folio_encontrados[0][1] if folio_encontrados else None,
-            "precio_total": max(precios_encontrados) if precios_encontrados else None,
+            "cargos_encontrados": set_prices
         }
         return response
