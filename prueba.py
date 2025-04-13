@@ -1,4 +1,4 @@
-from module.ocr_incoice import OcrInvoice
+from module.ocr.ocr_incoice import OcrInvoice
 
 
 ocr_factura = OcrInvoice()

@@ -2,7 +2,7 @@ import os
 
 from pathlib import Path
 from flask import Flask, request, jsonify
-from module.ocr_incoice import OcrInvoice
+from module.ocr.ocr_incoice import OcrInvoice
 
 app = Flask(__name__)
 
