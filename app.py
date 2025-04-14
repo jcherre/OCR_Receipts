@@ -1,56 +1,67 @@
 import os
 
 from pathlib import Path
-from typing import Optional
-
+from datetime import datetime
+from module.utils import allowed_file
 from flask import Flask, request, jsonify
 from module.ocr.ocr_incoice import OcrInvoice
 
+
+UPLOAD_FOLDER = 'tmp'
+ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg'}
+
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/api/v1/ocr-factura', methods=['POST'])
 def ocr_factura():
-    request_key = [
-        {
-            'key': 'ruc_receiving_company',
-            'required': True
-        },
-        {
-            'key': 'pdf_file',
-            'required': True
-        },
-        {
-            'key': 'image_file',
-            'required': False
-        },
-        {
-            'key': 'qr_code',
-            'required': False
-        }
-    ]
+    ruc_receiving_company = request.form.get('ruc_receiving_company')
+    pdf_file = request.files.get('pdf_file')
+    image_file = request.files.get('image_file')
+    qr_code = request.form.get('qr_code')
 
-    data = request.form
+    if not ruc_receiving_company:
+        return jsonify(
+            {
+                'error': 'El campo ruc_receiving_company es obligatorio.',
+                'code': 'REQUIRED_FIELD_MISSING'
+            }
+        ), 400
 
-    ruc_receiving_company = request.files['ruc_receiving_company']
+    if not pdf_file and not image_file:
+        return jsonify(
+            {
+                'error': 'Debe adjuntar un archivo PDF (pdf_file) o una imagen (image_file).',
+                'code': 'MISSING_REQUIRED_FILE'
+            }), 400
 
+    if pdf_file and image_file:
+        return jsonify({
+            'error': 'Solo puede adjuntar un archivo PDF (pdf_file) o una imagen (image_file), no ambos.',
+            'code': 'MUTUALLY_EXCLUSIVE_FIELDS'
+        }), 400
 
-    if 'pdf_file' not in request.files:
-        return jsonify({'error': 'No PDF file provided'}), 400
-
-    pdf_file = request.files['pdf_file']
     if pdf_file.filename.lower().endswith('.pdf'):
         try:
             tmp_directory = os.path.join(Path(__file__).parent.absolute(), 'tmp')
             pdf_path = os.path.join(tmp_directory, pdf_file.filename)
             pdf_file.save(pdf_path)
 
-            # I-process ang PDF
             ocr_extractor = OcrInvoice()
-            response = ocr_extractor.extract_information(pdf_path)
-
-            # Tanggalin ang temporary file
+            extracted_information = ocr_extractor.extract_information(pdf_path)
             os.remove(pdf_path)
-            return jsonify(response)
+
+            response = {
+                "status": "success",
+                "message": "Datos de la factura obtenidos exitosamente",
+                "data": extracted_information,
+                "metadata": {
+                    "version": "1.0",
+                    "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                }
+            }
+
+            return jsonify(response), 200
 
         except Exception as e:
             return jsonify({'error': f'Error: {str(e)}'}), 500

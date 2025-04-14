@@ -4,6 +4,10 @@ import numpy as np
 
 from PIL import Image
 
+def allowed_file(filename, allowed_extensions):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
+
+
 def is_number(string: str) -> bool:
     """
     Checks if a text string can be converted to a floating-point number.
@@ -19,6 +23,7 @@ def is_number(string: str) -> bool:
         return True
     except ValueError:
         return False
+
 
 def assign_price( price, text, set_prices):
     """

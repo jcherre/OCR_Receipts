@@ -161,10 +161,10 @@ class OcrInvoice:
         found_dates = self.extract_issue_date()
         found_series_and_correlative = self.extract_series_and_correlative()
         response = {
-            "ruc_emisor": found_rucs[0] if found_rucs else None,
-            "fecha_emision": found_dates[0] if found_dates else None,
-            "serie": found_series_and_correlative[0][0] if found_series_and_correlative else None,
-            "correlativo": found_series_and_correlative[0][1] if found_series_and_correlative else None,
-            "cargos_encontrados": set_prices
+            "issuer_ruc": found_rucs[0] if found_rucs else None,
+            "emission_date": found_dates[0] if found_dates else None,
+            "series": found_series_and_correlative[0][0] if found_series_and_correlative else None,
+            "sequential_number": found_series_and_correlative[0][1] if found_series_and_correlative else None,
+            "invoice_details": set_prices
         }
         return response
