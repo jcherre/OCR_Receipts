@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8098cd96-23d1-4b21-9677-d6762e498cae" name="Changes" comment="config: Eliminación archivos innecesarios">
+    <list default="true" id="8098cd96-23d1-4b21-9677-d6762e498cae" name="Changes" comment="feat: Manejo de errores en consultas a la api OCR">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/module/ocr/ocr_incoice.py" beforeDir="false" afterPath="$PROJECT_DIR$/module/ocr/ocr_incoice.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/module/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/module/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -79,7 +77,7 @@
       <workItem from="1744078239327" duration="7035000" />
       <workItem from="1744167171319" duration="5443000" />
       <workItem from="1744470505322" duration="24928000" />
-      <workItem from="1744599621352" duration="2436000" />
+      <workItem from="1744599621352" duration="3137000" />
     </task>
     <task id="LOCAL-00001" summary="feat: Creación de clase OcrFacturas para extraer los datos solicitados">
       <option name="closed" value="true" />
@@ -121,7 +119,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744599756061</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="feat: Manejo de errores en consultas a la api OCR">
+      <option name="closed" value="true" />
+      <created>1744602220001</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1744602220001</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -145,7 +151,8 @@
     <MESSAGE value="refac: Refactoring de la clase OcrInvoice y utils" />
     <MESSAGE value="refac: Refactoring distribución de carpetas" />
     <MESSAGE value="config: Eliminación archivos innecesarios" />
-    <option name="LAST_COMMIT_MESSAGE" value="config: Eliminación archivos innecesarios" />
+    <MESSAGE value="feat: Manejo de errores en consultas a la api OCR" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: Manejo de errores en consultas a la api OCR" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/OCR_Receipts$ocr_facturas.coverage" NAME="ocr_facturas Coverage Results" MODIFIED="1744509989882" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/module" />
