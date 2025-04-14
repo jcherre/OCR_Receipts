@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8098cd96-23d1-4b21-9677-d6762e498cae" name="Changes" comment="feat: Creación de método para extraer precios">
-      <change afterPath="$PROJECT_DIR$/module/ocr_incoice.py" afterDir="false" />
+    <list default="true" id="8098cd96-23d1-4b21-9677-d6762e498cae" name="Changes" comment="refac: Refactoring distribución de carpetas">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/module/ocr_facturas.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/module/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/module/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prueba.py" beforeDir="false" afterPath="$PROJECT_DIR$/prueba.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,6 +52,11 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Renato\Documents\re_proyectos\OCR_Receipts\module\ocr" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -75,7 +76,7 @@
       <workItem from="1743991821888" duration="1539000" />
       <workItem from="1744078239327" duration="7035000" />
       <workItem from="1744167171319" duration="5443000" />
-      <workItem from="1744470505322" duration="22863000" />
+      <workItem from="1744470505322" duration="24928000" />
     </task>
     <task id="LOCAL-00001" summary="feat: Creación de clase OcrFacturas para extraer los datos solicitados">
       <option name="closed" value="true" />
@@ -93,7 +94,23 @@
       <option name="project" value="LOCAL" />
       <updated>1744511310899</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="refac: Refactoring de la clase OcrInvoice y utils">
+      <option name="closed" value="true" />
+      <created>1744513362177</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1744513362177</updated>
+    </task>
+    <task id="LOCAL-00004" summary="refac: Refactoring distribución de carpetas">
+      <option name="closed" value="true" />
+      <created>1744513424749</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1744513424749</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -114,7 +131,9 @@
     <MESSAGE value="Merge branch 'main' into renato-branch" />
     <MESSAGE value="feat: Creación de clase OcrFacturas para extraer los datos solicitados" />
     <MESSAGE value="feat: Creación de método para extraer precios" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: Creación de método para extraer precios" />
+    <MESSAGE value="refac: Refactoring de la clase OcrInvoice y utils" />
+    <MESSAGE value="refac: Refactoring distribución de carpetas" />
+    <option name="LAST_COMMIT_MESSAGE" value="refac: Refactoring distribución de carpetas" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
