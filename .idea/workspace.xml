@@ -4,8 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8098cd96-23d1-4b21-9677-d6762e498cae" name="Changes" comment="feat: Manejo de errores en consultas a la api OCR">
+    <list default="true" id="8098cd96-23d1-4b21-9677-d6762e498cae" name="Changes" comment="refac: refactoring del archivo utils.py">
+      <change afterPath="$PROJECT_DIR$/module/ocr/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/module/ocr/ocr_incoice.py" beforeDir="false" afterPath="$PROJECT_DIR$/module/ocr/ocr_incoice.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/module/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/module/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -77,7 +80,8 @@
       <workItem from="1744078239327" duration="7035000" />
       <workItem from="1744167171319" duration="5443000" />
       <workItem from="1744470505322" duration="24928000" />
-      <workItem from="1744599621352" duration="3137000" />
+      <workItem from="1744599621352" duration="4827000" />
+      <workItem from="1744678508975" duration="5658000" />
     </task>
     <task id="LOCAL-00001" summary="feat: Creación de clase OcrFacturas para extraer los datos solicitados">
       <option name="closed" value="true" />
@@ -127,7 +131,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744602220001</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="refac: refactoring del archivo utils.py">
+      <option name="closed" value="true" />
+      <created>1744602882148</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1744602882148</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -152,13 +164,25 @@
     <MESSAGE value="refac: Refactoring distribución de carpetas" />
     <MESSAGE value="config: Eliminación archivos innecesarios" />
     <MESSAGE value="feat: Manejo de errores en consultas a la api OCR" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: Manejo de errores en consultas a la api OCR" />
+    <MESSAGE value="refac: refactoring del archivo utils.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="refac: refactoring del archivo utils.py" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/prueba.py</url>
+          <line>71</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/OCR_Receipts$ocr_facturas.coverage" NAME="ocr_facturas Coverage Results" MODIFIED="1744509989882" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/module" />
-    <SUITE FILE_PATH="coverage/OCR_Receipts$app.coverage" NAME="app Coverage Results" MODIFIED="1744601913799" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/OCR_Receipts$app.coverage" NAME="app Coverage Results" MODIFIED="1744684203740" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/OCR_Receipts$paddleocr.coverage" NAME="paddleocr Coverage Results" MODIFIED="1744079855911" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.venv/Lib/site-packages/paddleocr" />
     <SUITE FILE_PATH="coverage/OCR_Receipts$algoritmo.coverage" NAME="algoritmo Coverage Results" MODIFIED="1744474179527" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/OCR_Receipts$prueba.coverage" NAME="prueba Coverage Results" MODIFIED="1744510541910" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/OCR_Receipts$prueba.coverage" NAME="prueba Coverage Results" MODIFIED="1744682536579" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

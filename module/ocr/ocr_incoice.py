@@ -1,12 +1,8 @@
-import io
 import re
-import fitz
 import numpy as np
-import module.utils as ut
-
+import module.ocr.utils as ut
 
 from paddleocr import PaddleOCR
-
 
 
 class OcrInvoice:
@@ -139,17 +135,26 @@ class OcrInvoice:
 
         return set_prices
 
-    def extract_information(self, image_content: str) -> dict:
+    def extract_information(self, image_content: str, seller_ruc: str, type_document: str) -> dict:
         """
         Process the invoice image to extract key information such as RUC, issue date,
         series, serial number, and total price.
 
         :param image_content:The path to the invoice PDF file.
         :type image_content: str
+        :param seller_ruc: The ruc of the recipient company.
+        :type seller_ruc: str
+        :param type_document: Type of document that we upload.
+        :type type_document: str
         :return dict: A dictionary containing the information extracted from the invoice,
                       empty dictionary if there is an error.
         """
-        numpy_image = ut.process_pdf(image_content)
+        if type_document == 'pdf':
+            numpy_image = ut.process_pdf(image_content)
+        elif type_document == 'image':
+            numpy_image = ''
+        else:
+            numpy_image = None
         if numpy_image is None:
             return {}
         self.extract_text(numpy_image)
@@ -158,13 +163,19 @@ class OcrInvoice:
         )
         set_prices = self.extract_prices()
         found_rucs = self.extract_ruc()
-        found_dates = self.extract_issue_date()
-        found_series_and_correlative = self.extract_series_and_correlative()
-        response = {
-            "issuer_ruc": found_rucs[0] if found_rucs else None,
-            "emission_date": found_dates[0] if found_dates else None,
-            "series": found_series_and_correlative[0][0] if found_series_and_correlative else None,
-            "sequential_number": found_series_and_correlative[0][1] if found_series_and_correlative else None,
-            "invoice_details": set_prices
-        }
+        if seller_ruc in found_rucs:
+            found_dates = self.extract_issue_date()
+            found_series_and_correlative = self.extract_series_and_correlative()
+            response = {
+                "issuer_ruc": found_rucs[0] if found_rucs else None,
+                "emission_date": found_dates[0] if found_dates else None,
+                "series": found_series_and_correlative[0][0] if found_series_and_correlative else None,
+                "sequential_number": found_series_and_correlative[0][1] if found_series_and_correlative else None,
+                "invoice_details": set_prices
+            }
+        else:
+            response = {
+                "error": "El RUC ingresado no coincide con el RUC emisor especificado en la boleta.",
+                "code": "RUC_MISMATCH"
+            }
         return response
