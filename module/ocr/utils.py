@@ -50,11 +50,11 @@ def assign_price(price: str, text: str, set_prices: dict) -> dict:
     return set_prices
 
 
-def process_pdf(pdf_path: np.array) -> np.ndarray:
+def process_pdf(pdf_path: str) -> np.ndarray:
     """
     Converts the first page of a PDF file to a NumPy array of an image.
     :param pdf_path: The path to the PDF file.
-    :type pdf_path: np.ndarray.
+    :type pdf_path: str.
     :return np.ndarray: A NumPy array representing the image of the first page of the PDF, or None if there is an error.
     """
     pdf_document = fitz.open(pdf_path)
@@ -64,5 +64,19 @@ def process_pdf(pdf_path: np.array) -> np.ndarray:
     pdf_document.close()
     image_bytes = pix.tobytes("png")
     image_pil = Image.open(io.BytesIO(image_bytes))
+    image_numpy = np.array(image_pil)
+    return image_numpy
+
+
+def proces_image(image_path: str) -> np.ndarray:
+    """
+    Loads an image file and converts it to a NumPy array.
+
+    :param image_path: The path to the image file.
+    :type image_path: str
+    :return: A NumPy array representing the image, or None if there is an error loading the image.
+    :rtype: np.ndarray
+    """
+    image_pil = Image.open(image_path)
     image_numpy = np.array(image_pil)
     return image_numpy

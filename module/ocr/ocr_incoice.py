@@ -152,11 +152,13 @@ class OcrInvoice:
         if type_document == 'pdf':
             numpy_image = ut.process_pdf(image_content)
         elif type_document == 'image':
-            numpy_image = ''
+            numpy_image = ut.proces_image(image_content)
         else:
             numpy_image = None
+
         if numpy_image is None:
             return {}
+
         self.extract_text(numpy_image)
         self.words_joined = " ".join(self.extracted_word).replace(
             " - ", "-"

@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify
 from module.ocr.ocr_incoice import OcrInvoice
 
 TEMP_FOLDER = os.path.join(Path(__file__).parent, 'tmp')
-IMAGE_FOLDER = os.path.join(Path(__file__).parent, 'images')
+IMAGE_FOLDER = os.path.join(Path(__file__).parent, 'img')
 ALLOWED_EXTENSIONS = {'png', 'jpg'}
 
 app = Flask(__name__)
@@ -82,6 +82,18 @@ def ocr_factura():
                     seller_ruc=seller_ruc,
                     type_document='image'
                 )
+                if 'error' in extracted_information.keys():
+                    return ut.build_api_response_format(
+                        status="error",
+                        message=extracted_information['error'],
+                        body=extracted_information['code']
+                    )
+                else:
+                    return ut.build_api_response_format(
+                        status="success",
+                        message="Datos de la factura obtenidos exitosamente",
+                        body=extracted_information
+                    )
             else:
                 return ut.build_api_response_format(
                     status='error',
