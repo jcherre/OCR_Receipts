@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8098cd96-23d1-4b21-9677-d6762e498cae" name="Changes" comment="feat: Validacion de imagenes en el request">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/module/ocr/ocr_incoice.py" beforeDir="false" afterPath="$PROJECT_DIR$/module/ocr/ocr_incoice.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/module/ocr/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/module/ocr/utils.py" afterDir="false" />
-    </list>
+    <list default="true" id="8098cd96-23d1-4b21-9677-d6762e498cae" name="Changes" comment="feat: Lectura de imagenes por la api" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -80,7 +75,7 @@
       <workItem from="1744167171319" duration="5443000" />
       <workItem from="1744470505322" duration="24928000" />
       <workItem from="1744599621352" duration="4827000" />
-      <workItem from="1744678508975" duration="7012000" />
+      <workItem from="1744678508975" duration="7122000" />
     </task>
     <task id="LOCAL-00001" summary="feat: Creación de clase OcrFacturas para extraer los datos solicitados">
       <option name="closed" value="true" />
@@ -146,7 +141,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744684501943</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="feat: Lectura de imagenes por la api">
+      <option name="closed" value="true" />
+      <created>1744685673246</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1744685673246</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -173,7 +176,8 @@
     <MESSAGE value="feat: Manejo de errores en consultas a la api OCR" />
     <MESSAGE value="refac: refactoring del archivo utils.py" />
     <MESSAGE value="feat: Validacion de imagenes en el request" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: Validacion de imagenes en el request" />
+    <MESSAGE value="feat: Lectura de imagenes por la api" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: Lectura de imagenes por la api" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -185,7 +189,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/app.py</url>
-          <line>80</line>
+          <line>79</line>
           <option name="timeStamp" value="18" />
         </line-breakpoint>
       </breakpoints>
