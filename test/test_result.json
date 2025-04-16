@@ -1,0 +1,95 @@
+{
+    "10400150252-01-E001-310.pdf": {
+        "test": "PASS"
+    },
+    "10436083128-01-F001-437.pdf": {
+        "test": "PASS"
+    },
+    "10436083128_SanguchezLocos_F001-448.pdf": {
+        "test": "PASS"
+    },
+    "10719802210-01-F002-432.pdf": {
+        "test": "PASS"
+    },
+    "10766403366_ComercialGloriana_B001-3288.pdf": {
+        "test": "FAIL",
+        "mismatch": [
+            "invoice_details.IGV",
+            "invoice_details.importe_total"
+        ]
+    },
+    "20101313833-01-F511-25146.pdf": {
+        "test": "PASS"
+    },
+    "20132272418_Ittsabus_F500-455131.pdf": {
+        "test": "PASS"
+    },
+    "20503840121_Repsol_F609-10527.pdf": {
+        "test": "PASS"
+    },
+    "20510069251_CasaIdeas_F009-17902.pdf": {
+        "test": "FAIL",
+        "mismatch": [
+            "invoice_details.IGV",
+            "invoice_details.OP.Exoneradas",
+            "invoice_details.OP.Inafectas",
+            "invoice_details.OP.Gravadas",
+            "invoice_details.importe_total"
+        ]
+    },
+    "20511465061_Concesionaria Vial_F103-2064780.pdf": {
+        "test": "PASS"
+    },
+    "20523621212_LimaExpresa_F252-4025610.pdf": {
+        "test": "PASS"
+    },
+    "20523621212_LimaExpresa_F252-4057203.pdf": {
+        "test": "PASS"
+    },
+    "20523706803_Petro Explorium_F114-61913.pdf": {
+        "test": "PASS"
+    },
+    "20524546206-01-F003-5406.pdf": {
+        "test": "PASS"
+    },
+    "20536320092_Pan Ya San_F004-1378.pdf": {
+        "test": "PASS"
+    },
+    "20537671506-01-FS03-7750.pdf": {
+        "test": "PASS"
+    },
+    "20543875121_ExpoRack_E001-1501.pdf": {
+        "test": "PASS"
+    },
+    "20554430849_Camperos_F005-3307.pdf": {
+        "test": "PASS"
+    },
+    "20563529378_Tambo_F377-8999.pdf": {
+        "test": "FAIL",
+        "mismatch": [
+            "invoice_details.IGV"
+        ]
+    },
+    "20604476284_Yakua_F002-569.pdf": {
+        "test": "PASS"
+    },
+    "20605254315_BurgerKing_FB24-7360.pdf": {
+        "test": "PASS"
+    },
+    "20607574112_LaCasadelChicharron_FW02-2906.pdf": {
+        "test": "PASS"
+    },
+    "20608455796-01-E001-13.pdf": {
+        "test": "PASS"
+    },
+    "20611760788-01-FP01-971.pdf": {
+        "test": "PASS"
+    },
+    "WhatsApp Image 2025-04-15 at 9.25.53 AM.jpeg": {
+        "test": "FAIL",
+        "mismatch": [
+            "invoice_details.total_descuentos",
+            "invoice_details.importe_total"
+        ]
+    }
+}

@@ -1,4 +1,5 @@
 import re
+import datetime
 import numpy as np
 import module.ocr.utils as ut
 
@@ -49,6 +50,15 @@ class OcrInvoice:
         """
         date_pattern = r"\d{1,2}[-/]\d{2}[-/]\d{2,4}"
         found_dates = re.findall(date_pattern, self.words_joined)
+        for date in found_dates:
+            if '/' not in date[-4:] or '-' not in date[-4:]:
+                try:
+                    if int(date[-4:]) > datetime.datetime.now().year:
+                        found_dates.remove(date)
+                        found_dates.append(date[:-2])
+                except Exception as e:
+                    pass
+
         return found_dates
 
     def extract_series_and_correlative(self) -> list:
@@ -88,6 +98,7 @@ class OcrInvoice:
             "OP.Gravadas": None,
             "OP.Gratuita": None,
             "ICBPER": None,
+            "otros_cargos": None,
             "importe_total": None
         }
         currency_pattern = r"\d{1,3}(?:,\d{3})*\.\d{2,}"
@@ -107,32 +118,55 @@ class OcrInvoice:
         height_tolerance = 20.0
 
         for index in found_indices:
-            price = self.extracted_word[index]
+            price = (self.extracted_word[index]
+                     .replace('S', '')
+                     .replace('$', '')
+                     .replace('/.', '')
+                     .replace('/', '')
+                     .replace('[', '')
+                     .replace(']', '')
+                     .replace(',', '').strip())
             if not ut.is_number(price):
                 continue
 
             row = [price]
             y_coord = self.word_and_locations[index][1][3][1]
 
-            for i in [index + 1, index - 1]:
-                if 0 <= i < len(self.word_and_locations) and abs(
-                        self.word_and_locations[i][1][3][1] - y_coord) < height_tolerance:
+            for i in [index - 3, index + 2, index + 1, index - 1, index - 2, index - 3]:
+                if (0 <= i < len(self.word_and_locations) and abs(
+                        self.word_and_locations[i][1][3][1] - y_coord) < height_tolerance
+                        and len(self.word_and_locations[i][0].strip()) < 40):
                     row.append(self.word_and_locations[i][0])
                     break
 
             if len(row) == 2:
                 rows_prices.append(row)
 
+
         if rows_prices:
             for price, label_candidate in rows_prices:
                 set_prices = ut.assign_price(price, label_candidate, set_prices)
+
+            if set_prices['importe_total'] is None:
+                set_prices['importe_total'] = str(max([float(currency_arr) for currency_arr in currency_found]))
+                if set_prices['IGV'] is None:
+                    set_prices['IGV'] = str(min([float(currency_arr) for currency_arr in currency_found if float(currency_arr) > 0.0]))
+
         else:
             for word in self.extracted_word:
-                prices = re.findall(currency_pattern, word)
+                prices = re.findall(currency_pattern, word.replace('18.00%', ''))
                 if prices:
                     price = prices[0]
                     set_prices = ut.assign_price(price, word, set_prices)
 
+        if set_prices['otros_cargos'] is None:
+            for index_word in range(len(self.extracted_word)):
+                if 'CARGO' in self.extracted_word[index_word].upper():
+                    price_currently = re.findall(currency_pattern, self.extracted_word[index_word + 1])
+                    if price_currently:
+                        set_prices['otros_cargos'] = price_currently[0]
+                    else:
+                        set_prices['otros_cargos'] = '0.00'
         return set_prices
 
     def extract_information(self, image_content: str, seller_ruc: str, type_document: str) -> dict:
@@ -165,19 +199,29 @@ class OcrInvoice:
         )
         set_prices = self.extract_prices()
         found_rucs = self.extract_ruc()
-        if seller_ruc in found_rucs:
-            found_dates = self.extract_issue_date()
-            found_series_and_correlative = self.extract_series_and_correlative()
-            response = {
+
+        found_dates = self.extract_issue_date()
+        found_series_and_correlative = self.extract_series_and_correlative()
+        response = {
                 "issuer_ruc": found_rucs[0] if found_rucs else None,
                 "emission_date": found_dates[0] if found_dates else None,
                 "series": found_series_and_correlative[0][0] if found_series_and_correlative else None,
                 "sequential_number": found_series_and_correlative[0][1] if found_series_and_correlative else None,
                 "invoice_details": set_prices
-            }
-        else:
-            response = {
-                "error": "El RUC ingresado no coincide con el RUC emisor especificado en la boleta.",
-                "code": "RUC_MISMATCH"
-            }
+        }
+        # if seller_ruc in found_rucs:
+        #     found_dates = self.extract_issue_date()
+        #     found_series_and_correlative = self.extract_series_and_correlative()
+        #     response = {
+        #         "issuer_ruc": found_rucs[0] if found_rucs else None,
+        #         "emission_date": found_dates[0] if found_dates else None,
+        #         "series": found_series_and_correlative[0][0] if found_series_and_correlative else None,
+        #         "sequential_number": found_series_and_correlative[0][1] if found_series_and_correlative else None,
+        #         "invoice_details": set_prices
+        #     }
+        # else:
+        #     response = {
+        #         "error": "El RUC ingresado no coincide con el RUC emisor especificado en la boleta.",
+        #         "code": "RUC_MISMATCH"
+        #     }
         return response

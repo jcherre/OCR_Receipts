@@ -39,13 +39,14 @@ def assign_price(price: str, text: str, set_prices: dict) -> dict:
                   returned unchanged for that price.
     """
     text_upper = text.upper().replace('.', '')
-    set_prices['IGV'] = price if 'IGV' in text_upper else set_prices['IGV']
+    set_prices['IGV'] = price if 'IGV' in text_upper or 'GV' in text_upper else  set_prices['IGV']
     set_prices['total_descuentos'] = price if 'DESCUENTO' in text_upper else set_prices['total_descuentos']
-    set_prices['OP.Gratuita'] = price if 'GRATUITA' in text_upper else set_prices['OP.Gratuita']
-    set_prices['OP.Exoneradas'] = price if 'EXONERADA' in text_upper else set_prices['OP.Exoneradas']
-    set_prices['OP.Inafectas'] = price if 'INAFECTA' in text_upper else set_prices['OP.Inafectas']
-    set_prices['OP.Gravadas'] = price if 'GRAVADA' in text_upper else set_prices['OP.Gravadas']
+    set_prices['OP.Gratuita'] = price if 'GRATUIT' in text_upper else set_prices['OP.Gratuita']
+    set_prices['OP.Exoneradas'] = price if 'EXONERAD' in text_upper else set_prices['OP.Exoneradas']
+    set_prices['OP.Inafectas'] = price if 'INAFECT' in text_upper else set_prices['OP.Inafectas']
+    set_prices['OP.Gravadas'] = price if 'GRAVAD' in text_upper else set_prices['OP.Gravadas']
     set_prices['ICBPER'] = price if 'ICBPER' in text_upper else set_prices['ICBPER']
+    set_prices['otros_cargos'] = price if 'CARGO' in text_upper else set_prices['otros_cargos']
     set_prices['importe_total'] = price if 'TOTAL' in text_upper else set_prices['importe_total']
     return set_prices
 
