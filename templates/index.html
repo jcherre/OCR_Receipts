@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Scanner</title>
+    <!-- Link to Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1 class="text-center">Invoice Scanner</h1>
+    <div class="row justify-content-center mt-4">
+        <div class="col-12 col-md-6">
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label for="fileInput">Upload a JPG or PDF file</label>
+                    <input type="file" class="form-control" id="fileInput" accept=".jpg,.jpeg,.pdf" multiple>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Upload and Process Invoice</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Result Section -->
+    <div id="resultContainer" class="mt-5" style="display: none;">
+        <h3>Invoice Data:</h3>
+        <p><strong>Fecha de emsión:</strong> <span id="emissionDate">Not available</span></p>
+        <p><strong>RUC:</strong> <span id="issuerRuc">Not available</span></p>
+        <p><strong>Serie:</strong> <span id="series">Not available</span></p>
+        <p><strong>Correlativo:</strong> <span id="seqNumber">Not available</span></p>
+        <p><strong>Op. Exoneradas:</strong> <span id="operExo">Not available</span></p>
+        <p><strong>Op. Gravadas:</strong> <span id="operGrav">Not available</span></p>
+        <p><strong>Op. Gratuitas:</strong> <span id="operGrat">Not available</span></p>
+        <p><strong>Op. Inafectas:</strong> <span id="operIna">Not available</span></p>
+        <p><strong>ICBPER:</strong> <span id="icbper">Not available</span></p>
+        <p><strong>IGV:</strong> <span id="igv">Not available</span></p>
+        <p><strong>Total descuentos:</strong> <span id="totalDesc">Not available</span></p>
+        <p><strong>Importe Total:</strong> <span id="impTotal">Not available</span></p>
+    </div>
+</div>
+
+<!-- Link to Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Custom Script -->
+<script>
+    const uploadForm = document.getElementById('uploadForm');
+    const fileInput = document.getElementById('fileInput');
+    const resultContainer = document.getElementById('resultContainer');
+    const emissionDate = document.getElementById('emissionDate');
+    const issuerRuc = document.getElementById('issuerRuc');
+    const series = document.getElementById('series');
+    const seqNumber = document.getElementById('seqNumber');
+    const operExo = document.getElementById('operExo');
+    const operGrav = document.getElementById('operGrav');
+    const operGrat = document.getElementById('operGrat');
+    const operIna = document.getElementById('operIna');
+    const icbper = document.getElementById('icbper');
+    const igv = document.getElementById('igv');
+    const totalDesc = document.getElementById('totalDesc');
+    const impTotal = document.getElementById('impTotal');
+
+    uploadForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData();
+        const files = fileInput.files;
+        // Check if no files selected
+        if (!files || files.length === 0) {
+            alert("Please select at least one file before uploading.");
+            return;
+        } else {
+            /*if (files.length > 1) {
+                alert("Upload only one file.");
+                return;
+            } else {
+                formData.append("file", files[0]);
+            }*/
+            for (const file of fileInput.files) {
+                formData.append("files", file);
+            }
+        }
+        //formData.append("file", file);
+        formData.append("ruc_receiving_company", '20611901748')
+
+        fetch('/api/v1/ocr-receipt', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            // Show the result
+            resultContainer.style.display = 'block';
+            emissionDate.textContent = data.data.emission_date || "Not found";
+            issuerRuc.textContent = data.data.issuer_ruc || "Not found";
+            series.textContent = data.data.series || "Not found";
+            seqNumber.textContent = data.data.sequential_number || "Not found";
+            operExo.textContent = data.data.invoice_details["OP.Exoneradas"] || "Not found";
+            operGrav.textContent = data.data.invoice_details["OP.Gravadas"] || "Not found";
+            operGrat.textContent = data.data.invoice_details["OP.Gratuitas"]|| "Not found";
+            operIna.textContent = data.data.invoice_details["OP.Inafectas"] || "Not found";
+            icbper.textContent = data.data.invoice_details["ICBPER"] || "Not found";
+            igv.textContent = data.data.invoice_details["IGV"] || "Not found";
+            totalDesc.textContent = data.data.invoice_details["total_descuentos"] || "Not found";
+            impTotal.textContent = data.data.invoice_details["importe_total"] || "Not found";
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error processing the invoice! \n' + error);
+        });
+    });
+</script>
+
+</body>
+</html>
