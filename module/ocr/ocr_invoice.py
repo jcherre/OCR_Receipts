@@ -205,6 +205,7 @@ class OcrInvoice:
         response = {
                 "issuer_ruc": found_rucs[0] if found_rucs else None,
                 "emission_date": found_dates[0] if found_dates else None,
+                "doc_type": 'Factura' if 'F' in found_series_and_correlative[0][0] else 'Boleta',
                 "series": found_series_and_correlative[0][0] if found_series_and_correlative else None,
                 "sequential_number": found_series_and_correlative[0][1] if found_series_and_correlative else None,
                 "invoice_details": set_prices

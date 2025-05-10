@@ -28,6 +28,7 @@
         <h3>Invoice Data:</h3>
         <p><strong>Fecha de emsión:</strong> <span id="emissionDate">Not available</span></p>
         <p><strong>RUC:</strong> <span id="issuerRuc">Not available</span></p>
+        <p><strong>Tipo documento:</strong> <span id="docType">Not available</span></p>
         <p><strong>Serie:</strong> <span id="series">Not available</span></p>
         <p><strong>Correlativo:</strong> <span id="seqNumber">Not available</span></p>
         <p><strong>Op. Exoneradas:</strong> <span id="operExo">Not available</span></p>
@@ -53,6 +54,7 @@
     const resultContainer = document.getElementById('resultContainer');
     const emissionDate = document.getElementById('emissionDate');
     const issuerRuc = document.getElementById('issuerRuc');
+    const docType = document.getElementById('docType');
     const series = document.getElementById('series');
     const seqNumber = document.getElementById('seqNumber');
     const operExo = document.getElementById('operExo');
@@ -84,7 +86,7 @@
             }
         }
         //formData.append("file", file);
-        formData.append("ruc_receiving_company", '20611901748')
+        formData.append("seller_ruc", '20611901748')
 
         fetch('/api/v1/ocr-receipt', {
             method: 'POST',
@@ -97,11 +99,12 @@
             resultContainer.style.display = 'block';
             emissionDate.textContent = data.data.emission_date || "Not found";
             issuerRuc.textContent = data.data.issuer_ruc || "Not found";
+            docType.textContent = data.data.doc_type || "Not found";
             series.textContent = data.data.series || "Not found";
             seqNumber.textContent = data.data.sequential_number || "Not found";
             operExo.textContent = data.data.invoice_details["OP.Exoneradas"] || "Not found";
             operGrav.textContent = data.data.invoice_details["OP.Gravadas"] || "Not found";
-            operGrat.textContent = data.data.invoice_details["OP.Gratuitas"]|| "Not found";
+            operGrat.textContent = data.data.invoice_details["OP.Gratuita"]|| "Not found";
             operIna.textContent = data.data.invoice_details["OP.Inafectas"] || "Not found";
             icbper.textContent = data.data.invoice_details["ICBPER"] || "Not found";
             igv.textContent = data.data.invoice_details["IGV"] || "Not found";
