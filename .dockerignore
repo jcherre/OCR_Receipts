@@ -1,0 +1,13 @@
+.gitignore
+prueba.py
+.env
+README.md
+test_regex.py
+templates/
+test/
+Receipts/
+__pycache__/
+.idea/
+prueba_api.py
+saved/
+output/
