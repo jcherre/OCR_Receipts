@@ -1,8 +1,8 @@
 import requests
-from paddleocr import PaddleOCR
+#from paddleocr import PaddleOCR
 
 # Initialize PaddleOCR instance
-ocr = PaddleOCR()
+#ocr = PaddleOCR()
 
 def test_ocr_receipt():
     url = "http://localhost:8000/api/v1/ocr-receipt"

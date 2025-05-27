@@ -11,3 +11,7 @@ __pycache__/
 prueba_api.py
 saved/
 output/
+uploads/
+prueba_cor.py
+prueba_fuzzy.ipynb
+prueba_locations.py

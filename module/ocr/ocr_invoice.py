@@ -148,7 +148,7 @@ class OcrInvoice:
         cols_prices = []
         height_tolerance = 25.0
         width_tolerance = 20.0
-        new_line_tolerance = 60.0
+        new_line_tolerance = 80.0
 
         for index in found_indices:
             check_pattern = r"(?<!\d)[^\w\d]?(\d+(?:[\.,]\d+)?)"
@@ -227,7 +227,7 @@ class OcrInvoice:
             for price, label_candidates in cols_prices:
                 set_prices_cols = ut.assign_price_v2(price, label_candidates, set_prices_cols)
 
-            set_prices = {k: set_prices_rows[k] if set_prices_rows[k][0] is not None else set_prices_cols[k] for k in set_prices}
+            set_prices = {k: set_prices_rows[k] if set_prices_cols[k][0] is None or (set_prices_rows[k][0] is not None and set_prices_cols[k][0] is not None and set_prices_rows[k][1] >= set_prices_cols[k][1]) else set_prices_cols[k] for k in set_prices}
             #This should be handled further
             """if set_prices['IGV'][0] is None and not(set_prices['importe_total'][0] is None) and not(set_prices['OP.Gravadas'][0] is None):
                 set_prices['IGV'] = [f"{(float(set_prices['importe_total'][0]) - float(set_prices['OP.Gravadas'][0])):.2f}", 0.00]
