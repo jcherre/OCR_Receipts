@@ -7,13 +7,13 @@ import os
 
 from paddleocr import PaddleOCR
 
-_HEIGHT_TOLERANCE_COR = os.getenv("HEIGHT_TOLERANCE_COR", 20.0)
-_HEIGHT_TOLERANCE = os.getenv("HEIGHT_TOLERANCE", 25.0)
-_WIDTH_TOLERANCE = os.getenv("WIDTH_TOLERANCE", 20.0)
-_NEW_LINE_TOLERANCE = os.getenv("NEW_LINE_TOLERANCE", 80.0)
-_MAX_STRING_LENGTH = os.getenv("MAX_STRING_LENGTH", 40)
-_SCORE_CUTOFF_ROWS = os.getenv("SCORE_CUTOFF_ROWS", 65.0)
-_SCORE_CUTOFF_COLS = os.getenv("SCORE_CUTOFF_COLS", 65.0)
+_HEIGHT_TOLERANCE_COR = float(os.getenv("HEIGHT_TOLERANCE_COR", 20.0))
+_HEIGHT_TOLERANCE = float(os.getenv("HEIGHT_TOLERANCE", 25.0))
+_WIDTH_TOLERANCE = float(os.getenv("WIDTH_TOLERANCE", 20.0))
+_NEW_LINE_TOLERANCE = float(os.getenv("NEW_LINE_TOLERANCE", 80.0))
+_MAX_STRING_LENGTH = int(os.getenv("MAX_STRING_LENGTH", 40))
+_SCORE_CUTOFF_ROWS = float(os.getenv("SCORE_CUTOFF_ROWS", 65.0))
+_SCORE_CUTOFF_COLS = float(os.getenv("SCORE_CUTOFF_COLS", 65.0))
 
 class OcrInvoice:
     """
