@@ -3,9 +3,17 @@ import datetime
 import numpy as np
 import module.ocr.utils as ut
 import copy
+import os
 
 from paddleocr import PaddleOCR
 
+_HEIGHT_TOLERANCE_COR = os.getenv("HEIGHT_TOLERANCE_COR", 20.0)
+_HEIGHT_TOLERANCE = os.getenv("HEIGHT_TOLERANCE", 25.0)
+_WIDTH_TOLERANCE = os.getenv("WIDTH_TOLERANCE", 20.0)
+_NEW_LINE_TOLERANCE = os.getenv("NEW_LINE_TOLERANCE", 80.0)
+_MAX_STRING_LENGTH = os.getenv("MAX_STRING_LENGTH", 40)
+_SCORE_CUTOFF_ROWS = os.getenv("SCORE_CUTOFF_ROWS", 65.0)
+_SCORE_CUTOFF_COLS = os.getenv("SCORE_CUTOFF_COLS", 65.0)
 
 class OcrInvoice:
     """
@@ -35,9 +43,9 @@ class OcrInvoice:
         :type image_to_analyze: np.ndarray
         """
         result = self.ocr.predict(image_to_analyze)
-        for res in result:
-            res.save_to_img("output")  
-            res.save_to_json("output")
+        #for res in result:
+        #    res.save_to_img("output")  
+        #    res.save_to_json("output")
         self.result_json = result[0].json.get('res')
         self.word_and_locations = [[line, box] for box, line in zip(self.result_json.get('rec_boxes'), self.result_json.get('rec_texts')) if line not in ('s/', 'S/.', 'S/', '$/', '$/.')]
         self.extracted_word = [line for line in self.result_json.get('rec_texts') if line not in ('s/', 'S/.', 'S/', '$/', '$/.')]
@@ -92,7 +100,7 @@ class OcrInvoice:
                     correlative_and_serie[1] = correlatives[0]
 
             if correlative_and_serie == ['', '']:
-                height_tolerance = 20.0
+                height_tolerance = _HEIGHT_TOLERANCE_COR
                 escape = False
                 for found_word in self.word_and_locations:
                     if escape:
@@ -146,9 +154,10 @@ class OcrInvoice:
 
         rows_prices = []
         cols_prices = []
-        height_tolerance = 25.0
-        width_tolerance = 20.0
-        new_line_tolerance = 80.0
+        height_tolerance = _HEIGHT_TOLERANCE
+        width_tolerance = _WIDTH_TOLERANCE
+        new_line_tolerance = _NEW_LINE_TOLERANCE
+        max_string_length = _MAX_STRING_LENGTH
 
         for index in found_indices:
             check_pattern = r"(?<!\d)[^\w\d]?(\d+(?:[\.,]\d+)?)"
@@ -188,7 +197,7 @@ class OcrInvoice:
                         .replace(']', '')
                         .replace(',', '').strip() != price)) and
                     abs(self.word_and_locations[i][1][1] - y1_coord) < height_tolerance and
-                    len(self.word_and_locations[i][0].strip()) < 40):
+                    len(self.word_and_locations[i][0].strip()) < max_string_length):
                     row_candidates.append((abs(self.word_and_locations[i][1][1] - y1_coord), self.word_and_locations[i][0].strip()))
                     #break
             if len(row_candidates) > 0:
@@ -206,7 +215,7 @@ class OcrInvoice:
             for i in range(len(self.word_and_locations)):
                 if (i != index and
                     abs(self.word_and_locations[i][1][2] - x2_coord) < width_tolerance and
-                    len(self.word_and_locations[i][0].strip()) < 40 and
+                    len(self.word_and_locations[i][0].strip()) < max_string_length and
                     0 <= (y1_coord - self.word_and_locations[i][1][1]) < new_line_tolerance):
                     col_candidates.append((abs(self.word_and_locations[i][1][2] - x2_coord), self.word_and_locations[i][0].strip()))
                     #break 
@@ -219,13 +228,15 @@ class OcrInvoice:
 
 
         if rows_prices or cols_prices:
+            score_cutoff_rows = _SCORE_CUTOFF_ROWS
             set_prices_rows = copy.deepcopy(set_prices)
             for price, label_candidates in rows_prices:
-                set_prices_rows = ut.assign_price_v2(price, label_candidates, set_prices_rows)
+                set_prices_rows = ut.assign_price_v2(price, label_candidates, set_prices_rows, score_cutoff_rows)
             
+            score_cutoff_cols = _SCORE_CUTOFF_COLS
             set_prices_cols = copy.deepcopy(set_prices)
             for price, label_candidates in cols_prices:
-                set_prices_cols = ut.assign_price_v2(price, label_candidates, set_prices_cols)
+                set_prices_cols = ut.assign_price_v2(price, label_candidates, set_prices_cols, score_cutoff_cols)
 
             set_prices = {k: set_prices_rows[k] if set_prices_cols[k][0] is None or (set_prices_rows[k][0] is not None and set_prices_cols[k][0] is not None and set_prices_rows[k][1] >= set_prices_cols[k][1]) else set_prices_cols[k] for k in set_prices}
             #This should be handled further
@@ -285,19 +296,4 @@ class OcrInvoice:
                 "sequential_number": found_series_and_correlative[0][1] if found_series_and_correlative else None,
                 "invoice_details": set_prices
         }
-        # if seller_ruc in found_rucs:
-        #     found_dates = self.extract_issue_date()
-        #     found_series_and_correlative = self.extract_series_and_correlative()
-        #     response = {
-        #         "issuer_ruc": found_rucs[0] if found_rucs else None,
-        #         "emission_date": found_dates[0] if found_dates else None,
-        #         "series": found_series_and_correlative[0][0] if found_series_and_correlative else None,
-        #         "sequential_number": found_series_and_correlative[0][1] if found_series_and_correlative else None,
-        #         "invoice_details": set_prices
-        #     }
-        # else:
-        #     response = {
-        #         "error": "El RUC ingresado no coincide con el RUC emisor especificado en la boleta.",
-        #         "code": "RUC_MISMATCH"
-        #     }
         return response

@@ -121,8 +121,8 @@ def ocr_factura():
 
 @app.route('/')
 def index():
-#    return "API running successfully!"
-    return render_template('index.html')
+    return "API running successfully!"
+#    return render_template('index.html')
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=1100, debug=True)
+#if __name__ == '__main__':
+#    app.run(host='0.0.0.0', port=1100, debug=True)
