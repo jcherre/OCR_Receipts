@@ -1,6 +1,7 @@
 # OCR_Receipts
 
 El repo consiste en una implementación de PaddleOCRv5 para extraer información de comprobantes de pago en formatos de una imagen o un fichero PDF. El PDF es convertido a imagen y, una vez leído por el modelo, se extraen los siguientes campos utilizando expresiones regulares y lógica de similitud Fuzzy con la librería `rapidfuzz`:
+
 * RUC del emisor
 * Tipo de documento
 * Serie y correlativo
