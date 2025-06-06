@@ -1,4 +1,5 @@
 import os
+import shutil
 import module.utils as ut
 
 from pathlib import Path
@@ -7,25 +8,22 @@ from module.ocr.ocr_invoice import OcrInvoice
 
 TEMP_FOLDER = os.path.join(Path(__file__).parent, 'tmp')
 IMAGE_FOLDER = os.path.join(Path(__file__).parent, 'img')
+SAVED_FOLDER = os.path.join(Path(__file__).parent, 'uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = TEMP_FOLDER
 app.config['IMAGE_FOLDER'] = IMAGE_FOLDER
+app.config['SAVED_FOLDER'] = SAVED_FOLDER
 
-# Route to serve the main page (frontend)
-@app.route('/')
-def index():
-    return render_template('index.html')
+ocr_extractor = OcrInvoice()
 
 @app.route('/api/v1/ocr-receipt', methods=['POST'])
 def ocr_factura():
     seller_ruc = request.form.get('seller_ruc')
-    pdf_file = request.files.get('pdf_file')
-    image_file = request.files.get('image_file')
     files = request.files.getlist('files')
     qr_code = request.form.get('qr_code')
-    ocr_extractor = OcrInvoice()
+
     if not seller_ruc:
         return ut.build_api_response_format(
             status='error',
@@ -50,18 +48,17 @@ def ocr_factura():
         )
     file = files[0]
     print(file)
-    #if pdf_file:
-    #if pdf_file.filename.lower().endswith('.pdf'):
+
     if file.filename.lower().endswith('.pdf'):
         try:
             pdf_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            saved_path = os.path.join(app.config['SAVED_FOLDER'], file.filename)
             file.save(pdf_path)
             extracted_information = ocr_extractor.extract_information(
                 image_content=pdf_path,
                 seller_ruc=seller_ruc,
                 type_document='pdf'
             )
-            os.remove(pdf_path)
 
             if 'error' in extracted_information.keys():
                 return ut.build_api_response_format(
@@ -70,6 +67,7 @@ def ocr_factura():
                     body=extracted_information['code']
                 )
             else:
+                shutil.copy(pdf_path, saved_path)
                 return ut.build_api_response_format(
                     status="success",
                     message="Datos de la factura obtenidos exitosamente",
@@ -78,9 +76,12 @@ def ocr_factura():
 
         except Exception as e:
             return jsonify({'error': f'Error: {str(e)}'}), 500
-    elif file.filename.lower().endswith('.png') or file.filename.lower().endswith('.jpg') or file.filename.lower().endswith('.jpeg'):
-        if ut.allowed_file(filename=file.filename, allowed_extensions=ALLOWED_EXTENSIONS):
+        finally:
+            os.remove(pdf_path)
+    elif ut.allowed_file(filename=file.filename, allowed_extensions=ALLOWED_EXTENSIONS):
+        try:
             image_path = os.path.join(app.config['IMAGE_FOLDER'], file.filename)
+            saved_path = os.path.join(app.config['SAVED_FOLDER'], file.filename)
             file.save(image_path)
             if ut.evaluate_sharpness(image_path):
                 extracted_information = ocr_extractor.extract_information(
@@ -95,6 +96,7 @@ def ocr_factura():
                         body=extracted_information['code']
                     )
                 else:
+                    shutil.copy(image_path, saved_path)
                     return ut.build_api_response_format(
                         status="success",
                         message="Datos de la factura obtenidos exitosamente",
@@ -106,9 +108,21 @@ def ocr_factura():
                     message='La imagen cargada no cumple con los estándares de nitidez establecidos',
                     body='IMAGE_QUALITY_LOW'
                 )
+        except Exception as e:
+            return jsonify({'error': f'Error: {str(e)}'}), 500
+        finally:
+            os.remove(image_path)
     else:
-        return jsonify({'error': 'Invalid file type. Please upload a PDF file.'})
+        return ut.build_api_response_format(
+            status='error',
+            message='El tipo de archivo es inválido. Por favor suba un archivo PDF, PNG o JPG',
+            body='INVALID_FILE_TYPE'
+        )
 
+@app.route('/')
+def index():
+    return "API running successfully!"
+#    return render_template('index.html')
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+#if __name__ == '__main__':
+#    app.run(host='0.0.0.0', port=1100, debug=True)

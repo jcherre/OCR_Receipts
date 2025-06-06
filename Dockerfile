@@ -21,12 +21,4 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . .
 
-# Expose the port Flask runs on
-EXPOSE 5000
-
-# Define environment variables
-ENV FLASK_APP=app.py
-ENV FLASK_RUN_HOST=0.0.0.0
-
-# Command to run the application
-CMD ["python", "app.py"]
+CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:8000", "app:app"]
